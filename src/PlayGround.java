@@ -3,18 +3,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 class PlayGround {
     private static AtomicInteger idCounter = new AtomicInteger();
+    public static Random r = new Random();
+
     private final int id;
-    private final String name;
-    private final int activityTime;
-    private final int childrenCapacity;
-    private final List<Visitor> currentVisitors = new ArrayList<>();
+    private String name;
+    private int activityTime;
+    private int childrenCapacity;
+    private List<Visitor> currentVisitors;
     private int totalVisitors = 0;
-    private boolean isAvailable = true;
+    private boolean isAvailable;
+
 
     public PlayGround(String name) {
         this.id = idCounter.incrementAndGet();
         this.name = name;
-        Random r = new Random();
+        this.currentVisitors =  new ArrayList<>();
+        setAvailable(true);
         this.activityTime = r.nextInt(21) + 10; // 10-30 seconds
         this.childrenCapacity = r.nextInt(6) + 1; // 1-6 visitors
     }
@@ -40,7 +44,7 @@ class PlayGround {
     }
 
     public synchronized boolean addVisitor(Visitor visitor) {
-        if (currentVisitors.size() < childrenCapacity && isAvailable) {
+        if (currentVisitors.size() < childrenCapacity && isAvailable) { //
             currentVisitors.add(visitor);
             visitor.setBusy(this);
             totalVisitors++;
@@ -61,10 +65,11 @@ class PlayGround {
                     for (Visitor visitor : currentVisitors) {
                         visitor.setNotBusy(); // שחרור המבקרים לאחר סיום הפעילות
                         visitor.addTimePlaying(activityTime); // ספירת זמן הפעילות של המבקר
+                        setAvailable(true);
                         Thread.sleep(10000); // נוחים למשך 10 שניות
                     }
+                    setAvailable(true);
                     currentVisitors.clear();
-                    isAvailable = true;
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -72,8 +77,9 @@ class PlayGround {
         }).start();
     }
 
-
-
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
 
     public synchronized int getTotalVisitors() {
         return totalVisitors;

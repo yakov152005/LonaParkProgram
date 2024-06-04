@@ -22,7 +22,7 @@ public class LonaParkProgram {
     private void startSimulation() {
         Thread simulationThread = new Thread(() -> {
             try {
-                for (int i = 0; i < 60; i++) {
+                for (int i = 0; i < 10; i++) {
                     if (!running) break;
                     simulate();
                     Thread.sleep(5000);
@@ -48,9 +48,11 @@ public class LonaParkProgram {
                             break;
                         }
                     }
-                    if (playGround != null && playGround.addVisitor(visitor)) {
-                        visitor.addTimeWaiting(5);
-                        break;
+                    if (playGround != null) {
+                        if (playGround.addVisitor(visitor)){
+                            visitor.addTimeWaiting(5);
+                            break;
+                        }
                     }
                 }
             } else {
@@ -59,6 +61,7 @@ public class LonaParkProgram {
         }
         for (PlayGround playGround : playGrounds) {
             if (playGround.isAvailable() && !playGround.getCurrentVisitors().isEmpty()) {
+
                 playGround.operate(); // קריאה לפעולת ההפעלה של המתקן כאשר הוא פנוי ויש לו מבקרים
             }
         }
@@ -79,9 +82,11 @@ public class LonaParkProgram {
         running = false;
         System.out.println("Final Park Status:");
         for (Visitor visitor : visitors) {
+            visitor.setNotBusy();
             System.out.println(visitor);
         }
         for (PlayGround playGround : playGrounds) {
+            playGround.setAvailable(false);
             System.out.println(playGround);
         }
     }

@@ -11,7 +11,7 @@ class Visitor {
     private final Map<Integer, Integer> preferences;
     private int totalTimeWaitingLine = 0;
     private int totalTimePlayGround = 0;
-    private boolean isBusy = false;
+    private boolean isBusy;
     private PlayGround currentPlayGround = null;
     private int totalVisitedPlaygrounds = 0;
 
@@ -19,6 +19,7 @@ class Visitor {
         this.id = idCounter.incrementAndGet();
         this.name = name;
         this.preferences = generatePreferences();
+        this.isBusy = false;
     }
 
     private Map<Integer, Integer> generatePreferences() {
