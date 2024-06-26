@@ -57,7 +57,7 @@ class PlayGround {
         if (!isAvailable) return;
         isAvailable = false;
 
-        // Simulate the ride activity time
+        
         new Thread(() -> {
             try {
                 Thread.sleep(activityTime * 1000);
